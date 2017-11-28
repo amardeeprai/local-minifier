@@ -1,0 +1,5 @@
+.tmp
+/dist
+node_modules
+gulp-cache
+.DS_Store
