@@ -23,10 +23,10 @@ var gulp = require('gulp');
 var htmlmin = require('gulp-htmlmin');
 var runSequence = require('run-sequence');
 var sass = require('gulp-sass');
-var uglify = require('gulp-uglify');
+var terser = require('gulp-terser');
 
 // Set the browser that you want to supoprt
-const AUTOPREFIXER_BROWSERS = [
+const overrideBrowserslist = [
   'ie >= 10',
   'ie_mob >= 10',
   'ff >= 30',
@@ -49,7 +49,7 @@ gulp.task('styles', function () {
       onError: console.error.bind(console, 'Sass error:')
     }))
     // Auto-prefix css styles for cross browser compatibility
-    .pipe(autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
+    .pipe(autoprefixer({browsers: overrideBrowserslist}))
     // Minify the file
     .pipe(csso())
     // Output
@@ -60,7 +60,7 @@ gulp.task('styles', function () {
 gulp.task('scripts', function() {
   return gulp.src('./src/js/**/*.js')
     // Minify the file
-    .pipe(uglify())
+    .pipe(terser())
     // Output
     .pipe(gulp.dest('./dist/js'))
 });
@@ -79,10 +79,6 @@ gulp.task('pages', function() {
 gulp.task('clean', () => del(['dist']));
 
 // Gulp task to minify all files
-gulp.task('default', ['clean'], function () {
-  runSequence(
-    'styles',
-    'scripts',
-    'pages'
-  );
+gulp.task('default', gulp.series('clean','styles','scripts','pages'), function (done) {
+  done();
 });
